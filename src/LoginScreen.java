@@ -1,4 +1,5 @@
 import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,50 +17,49 @@ public class LoginScreen extends JFrame {
 
         setTitle("Password Manager - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 450);
+        setSize(720, 480);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Background gradient
+        // Gradient background
         JPanel background = new JPanel() {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g.create();
-                int width = getWidth();
-                int height = getHeight();
-
-                GradientPaint gp = new GradientPaint(
-                        0, 0, new Color(236, 233, 252),
-                        width, height, new Color(220, 248, 250)
-                );
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, width, height);
+                int w = getWidth(), h = getHeight();
+                g2d.setPaint(new GradientPaint(0, 0, new Color(236, 233, 252), w, h, new Color(220, 248, 250)));
+                g2d.fillRect(0, 0, w, h);
                 g2d.dispose();
             }
         };
         background.setLayout(new GridBagLayout());
 
-        // Glassmorphic login panel
+        // Glassmorphic panel
         JPanel loginPanel = new JPanel(new GridBagLayout()) {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g.create();
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-                g2d.setColor(Color.white);
-                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-                g2d.setColor(new Color(255, 255, 255, 80));
-                g2d.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+                g2d.setColor(Color.WHITE);
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+
+                // Drop shadow effect
+                g2d.setColor(new Color(255, 255, 255, 120));
+                g2d.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 25, 25);
                 g2d.dispose();
             }
         };
-        loginPanel.setPreferredSize(new Dimension(350, 350));
+        loginPanel.setPreferredSize(new Dimension(360, 360));
         loginPanel.setOpaque(false);
 
-        // Components
+        // Title
         JLabel title = new JLabel("Welcome Back 👋");
-        title.setFont(new Font("Poppins", Font.BOLD, 26));
-        title.setForeground(new Color(70, 70, 70));
+        title.setFont(new Font("Poppins", Font.BOLD, 28));
+        title.setForeground(new Color(60, 60, 60));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
 
+        // Inputs and button
         usernameField = new JTextField();
         passwordField = new JPasswordField();
         loginButton = new JButton("Sign In");
@@ -73,34 +73,29 @@ public class LoginScreen extends JFrame {
 
         // Layout
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(12, 10, 12, 10);
+        gbc.insets = new Insets(12, 20, 12, 20);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
 
         gbc.gridy = 0;
         loginPanel.add(title, gbc);
-
         gbc.gridy++;
         loginPanel.add(usernameField, gbc);
-
         gbc.gridy++;
-        JPanel passwordPanel = new JPanel(new BorderLayout());
-        passwordPanel.setOpaque(false);
-        passwordPanel.add(passwordField, BorderLayout.CENTER);
-        loginPanel.add(passwordPanel, gbc);
-
+        loginPanel.add(passwordField, gbc);
         gbc.gridy++;
         loginPanel.add(loginButton, gbc);
 
         background.add(loginPanel);
         add(background, BorderLayout.CENTER);
 
-        // Events
+        // Login action
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
             if (username.equals("admin") && password.equals("1234")) {
-                JOptionPane.showMessageDialog(this, "Login Successful!");
+                dispose();
+                new Dashboard(); // Make sure Dashboard class exists
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Credentials!", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -110,20 +105,25 @@ public class LoginScreen extends JFrame {
     }
 
     private void styleField(JTextField field) {
-        field.setBackground(new Color(255, 255, 255, 180));
-        field.setForeground(new Color(33, 33, 33));
-        field.setCaretColor(new Color(33, 33, 33));
-        field.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        field.setFont(new Font("Poppins", Font.PLAIN, 14));
+        field.setOpaque(false);
+        field.setBackground(new Color(255, 255, 255, 160));
+        field.setForeground(new Color(50, 50, 50));
+        field.setCaretColor(Color.DARK_GRAY);
+        field.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220), 1, true),
+                BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
+        field.setFont(new Font("Poppins", Font.PLAIN, 15));
     }
 
     private void styleButton(JButton button) {
         button.setBackground(new Color(0, 123, 255));
-        button.setForeground(Color.white);
+        button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(14, 25, 14, 25));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setFont(new Font("Poppins", Font.BOLD, 16));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
+        button.setUI(new javax.swing.plaf.basic.BasicButtonUI()); // Avoid ugly borders
     }
 
     public static void main(String[] args) {
