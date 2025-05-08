@@ -39,12 +39,13 @@ public class DatabaseManager {
         }
     }
 
-    public boolean updatePassword(String service, String username, String password) {
+    public boolean updatePassword(String service, String username, String password, String old_password) {
         String sql = "UPDATE passwords SET service=?, username=?, password=? WHERE service=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, service);
             stmt.setString(2, username);
             stmt.setString(3, password);
+            stmt.setString(4, old_password);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

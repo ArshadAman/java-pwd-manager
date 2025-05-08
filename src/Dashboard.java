@@ -127,9 +127,13 @@ public class Dashboard extends JFrame {
                 String newUsername = JOptionPane.showInputDialog("Edit Username", entry.username);
                 String newPassword = JOptionPane.showInputDialog("Edit Password", entry.password);
                 if (newService != null && newUsername != null && newPassword != null) {
+                    String old_password = entry.service;
                     entry.service = newService;
                     entry.username = newUsername;
                     entry.password = newPassword;
+                    // Update the database
+                    DatabaseManager db = new DatabaseManager();
+                    db.updatePassword(newService, newUsername, newPassword, old_password);
                     refreshList();
                 }
             });
