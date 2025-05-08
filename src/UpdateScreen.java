@@ -10,7 +10,7 @@ public class UpdateScreen extends JFrame {
     private JTextField serviceField;
     private JButton saveButton;
     private JButton cancelButton;
-
+    DatabaseManager db = new DatabaseManager();
     public UpdateScreen(String serviceName, String username, String password) {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
@@ -130,7 +130,12 @@ public class UpdateScreen extends JFrame {
                 String updatedUsername = usernameField.getText();
                 String updatedPassword = new String(passwordField.getPassword());
                 // You can implement saving logic here (e.g., updating the database or model)
-                JOptionPane.showMessageDialog(UpdateScreen.this, "Service details updated successfully.");
+                boolean success = db.updatePassword(serviceName, updatedUsername, updatedPassword);
+                if(success) {
+                    JOptionPane.showMessageDialog(UpdateScreen.this, "Service details updated successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(UpdateScreen.this, "Failed to update service details.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 dispose();
             }
         });
@@ -142,9 +147,5 @@ public class UpdateScreen extends JFrame {
         });
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new UpdateScreen("Instagram", "arshadaman", "mypassword123");
     }
 }

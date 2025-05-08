@@ -7,7 +7,7 @@ public class SignupScreen extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
-    private JButton signupButton;
+    private JButton signupButton, loginButton;
 
     public SignupScreen() {
         try {
@@ -65,6 +65,7 @@ public class SignupScreen extends JFrame {
         passwordField = new JPasswordField();
         confirmPasswordField = new JPasswordField();
         signupButton = new JButton("Sign Up");
+        loginButton = new JButton("Login");
 
         usernameField.putClientProperty("JTextField.placeholderText", "Username");
         passwordField.putClientProperty("JTextField.placeholderText", "Password");
@@ -74,6 +75,7 @@ public class SignupScreen extends JFrame {
         styleField(confirmPasswordField);
         styleField(passwordField);
         styleButton(signupButton);
+//        styleButton(loginButton);
 
         // Layout
         GridBagConstraints gbc = new GridBagConstraints();
@@ -91,6 +93,8 @@ public class SignupScreen extends JFrame {
         signupPanel.add(confirmPasswordField, gbc);
         gbc.gridy++;
         signupPanel.add(signupButton, gbc);
+        gbc.gridy++;
+        signupPanel.add(loginButton, gbc);
 
         background.add(signupPanel);
         add(background, BorderLayout.CENTER);
@@ -100,15 +104,30 @@ public class SignupScreen extends JFrame {
             String username = usernameField.getText();
             String password = new String(confirmPasswordField.getPassword());
             String c_password = new String(passwordField.getPassword());
-            if (!username.isEmpty() && !password.isEmpty() && password.equals(c_password)) {
+
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!password.equals(c_password)) {
+                JOptionPane.showMessageDialog(this, "Passwords do not match", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            DatabaseManager db = new DatabaseManager();
+            boolean success = db.registerUser(username, password);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "User registered successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
-                new Dashboard(); // Make sure Dashboard class exists
-            } else if(username.equals("admin") ) {
-                JOptionPane.showMessageDialog(this, "User already exits", "Error", JOptionPane.ERROR_MESSAGE);
+                new Dashboard();
+            } else {
+                JOptionPane.showMessageDialog(this, "Username already exists or error occurred", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            else if(!password.equals(c_password) || (!username.isEmpty() && !password.isEmpty())){
-                JOptionPane.showMessageDialog(this, "Password does't match", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        });
+
+        loginButton.addActionListener(e -> {
+            new LoginScreen();
         });
 
         setVisible(true);
@@ -134,9 +153,5 @@ public class SignupScreen extends JFrame {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
         button.setUI(new javax.swing.plaf.basic.BasicButtonUI()); // Avoid ugly borders
-    }
-
-    public static void main(String[] args) {
-        new SignupScreen();
     }
 }

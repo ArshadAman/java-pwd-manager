@@ -6,7 +6,7 @@ import java.awt.*;
 public class LoginScreen extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JButton loginButton;
+    private JButton loginButton, signupButton;
 
     public LoginScreen() {
         try {
@@ -63,6 +63,7 @@ public class LoginScreen extends JFrame {
         usernameField = new JTextField();
         passwordField = new JPasswordField();
         loginButton = new JButton("Sign In");
+        signupButton = new JButton("Sign Up");
 
         usernameField.putClientProperty("JTextField.placeholderText", "Username");
         passwordField.putClientProperty("JTextField.placeholderText", "Password");
@@ -70,6 +71,7 @@ public class LoginScreen extends JFrame {
         styleField(usernameField);
         styleField(passwordField);
         styleButton(loginButton);
+//        styleButton(signupButton);
 
         // Layout
         GridBagConstraints gbc = new GridBagConstraints();
@@ -85,6 +87,8 @@ public class LoginScreen extends JFrame {
         loginPanel.add(passwordField, gbc);
         gbc.gridy++;
         loginPanel.add(loginButton, gbc);
+        gbc.gridy++;
+        loginPanel.add(signupButton, gbc);
 
         background.add(loginPanel);
         add(background, BorderLayout.CENTER);
@@ -93,12 +97,18 @@ public class LoginScreen extends JFrame {
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
-            if (username.equals("admin") && password.equals("1234")) {
+            DatabaseManager db = new DatabaseManager();
+            boolean isValid = db.validateLogin(username, password);
+            if (isValid) {
+                new Dashboard();
                 dispose();
-                new Dashboard(); // Make sure Dashboard class exists
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Credentials!", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        });
+
+        signupButton.addActionListener(e -> {
+            new SignupScreen();
         });
 
         setVisible(true);

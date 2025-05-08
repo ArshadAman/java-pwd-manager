@@ -60,11 +60,15 @@ public class AddPassword extends JFrame {
             String password = service_pass.getText();
 
             if (!service.isEmpty() && !username.isEmpty() && !password.isEmpty()) {
-                // Here you'd save it to a file or database
-                JOptionPane.showMessageDialog(this, "Password Saved Successfully!", "Saved", JOptionPane.INFORMATION_MESSAGE);
-                // Optionally clear fields
-                dispose();
-                new Dashboard();
+                DatabaseManager db = new DatabaseManager();
+                boolean success = db.insertPassword(service, username, password);
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Password Saved Successfully!", "Saved", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                    new Dashboard();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to save password", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -90,9 +94,5 @@ public class AddPassword extends JFrame {
         button.setBackground(new Color(0, 123, 255));
         button.setFocusPainted(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    }
-
-    public static void main(String args[]) {
-        new AddPassword();
     }
 }
