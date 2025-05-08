@@ -1,9 +1,9 @@
 import java.sql.*;
 
 public class DatabaseManager {
-    private static final String URL = "jdbc:mysql://localhost:3306/pwd_schema";
+    private static final String URL = "jdbc:mysql://localhost:3306/pwd_manager";
     private static final String USER = "root";
-    private static final String PASSWORD = "24Mmce23";
+    private static final String PASSWORD = "root";
 
     private Connection conn;
 
